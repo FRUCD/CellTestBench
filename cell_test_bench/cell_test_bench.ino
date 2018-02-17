@@ -4,11 +4,12 @@
 
 int SWITCH_PIN = 2;
 int TRIGGER_PIN = 3;
-int BATTERY_PIN = 1;
-int RESISTOR_PIN = 3;
+int BATTERY_PIN = 3;
+int RESISTOR_PIN = 1;
 int valB, valR;
 int count;
 double res_voltage, bat_voltage;
+const double CORRECTION_FACTOR = 2;//1.80806;
 
 void setup() {
   // put your setup code here, to run once:
@@ -35,10 +36,11 @@ void loop() {
     for (int i = 0; i < T1 * SAMPLING_FREQUENCY; i++) {
       valB = analogRead(BATTERY_PIN);
       valR = analogRead(RESISTOR_PIN);
-      bat_voltage = ((double)valB / (double)1023) * 5.0;
-      res_voltage = ((double)valR / (double)1023) * 5.0;
-      Serial.println(bat_voltage);
-      Serial.println(res_voltage);
+      bat_voltage = ((double)valB / (double)1023) * 5.0; 
+      res_voltage = ((double)valR / (double)1023) * 5.0; 
+      double current = (bat_voltage - res_voltage) * CORRECTION_FACTOR;
+      Serial.println(bat_voltage * CORRECTION_FACTOR);
+      Serial.println((current) / .527778);
       delay(1000 / SAMPLING_FREQUENCY);
     }
 
@@ -47,10 +49,12 @@ void loop() {
       valR = analogRead(RESISTOR_PIN);
       bat_voltage = ((double)valB / (double)1023) * 5.0;
       res_voltage = ((double)valR / (double)1023) * 5.0;
-      Serial.println(bat_voltage);
-      Serial.println(res_voltage);
+      double current = (res_voltage - bat_voltage) * CORRECTION_FACTOR;
+      Serial.println(bat_voltage * CORRECTION_FACTOR);
+      Serial.println((current) / .527778);
       delay(1000 / SAMPLING_FREQUENCY);
     }
-    Serial.println("DONE");
+        Serial.println("DONE");
+
   }
 }

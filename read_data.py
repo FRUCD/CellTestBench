@@ -53,7 +53,7 @@ while True:
                 outputFile = open(str(fileNum) +'chargeData.csv', 'w', newline='')
                 fileNum += 1
                 out = csv.writer(outputFile)
-                out.writerow(['battery', 'resistor'])
+                out.writerow(['voltage(V)', 'current(A)'])
                 print("Started")
                 #running = True
         elif STATE == 1:
@@ -71,6 +71,7 @@ while True:
                 #listLock.release()
 
             if index % 2 == 1:
+                print(resList)
                 out.writerow(resList)
 
             index += 1
