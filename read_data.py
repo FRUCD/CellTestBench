@@ -5,6 +5,8 @@ import os
 import threading as thr
 import serial
 
+CORRECTION_FACTOR = 2#1.80806
+
 #listLock = thr.Lock()
 '''
 running = False
@@ -25,6 +27,7 @@ listenThr = io()
 listenThr.start()
 '''
 ser = serial.Serial('COM5', 9600, timeout=0)
+print('Port acquired')
 
 index = 0
 resList = 2 * [0]
@@ -50,13 +53,18 @@ while True:
         if STATE == 0:
             if data == 'START':
                 STATE = 1
-                outputFile = open(str(fileNum) +'chargeData.csv', 'w', newline='')
+                try:
+                    outputFile = open(str(fileNum) +'chargeData.csv', 'w', newline='')
+                    print('Opened file')
+                except:
+                    print('File not opened')
                 fileNum += 1
                 out = csv.writer(outputFile)
                 out.writerow(['voltage(V)', 'current(A)'])
                 print("Started")
                 #running = True
         elif STATE == 1:
+            print(index)
             if data == 'DONE':
                 index = 0
                 dataBuffer = ''
@@ -66,14 +74,19 @@ while True:
                 print("Finished")
 
             else:
-                #listLock.acquire()
                 resList[index % 2] = data
-                #listLock.release()
 
             if index % 2 == 1:
-                print(resList)
-                out.writerow(resList)
-
+                row = [0, 0]
+                valB = resList[0]
+                valR = resList[1]
+                bat_voltage = float(valB) #* .0049
+                res_voltage = float(valR) * .0049
+                current = (res_voltage - bat_voltage) * CORRECTION_FACTOR
+                row[0] = bat_voltage * CORRECTION_FACTOR
+                row[1] = (current) / .527778
+                print(row)
+                out.writerow(row)
             index += 1
 
     except:
