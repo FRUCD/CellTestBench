@@ -31,7 +31,9 @@ for i in range(grouping):
     print(sum(diff)/len(diff))
     print("length: " + str(len(groups[i])))
     for j in range(len(groups[i])):
-        groups[i][j] = frame_i = groups[i][j].to_frame().transpose()
+        frame_i = groups[i][j].to_frame().transpose()
+        frame_i[['Group', 'Cell']] = frame_i[['Group', 'Cell']].astype(int)
+        groups[i][j] = frame_i
     groups[i] = pd.concat(groups[i], ignore_index=True)
 
 frame = pd.concat(groups, ignore_index=True)
