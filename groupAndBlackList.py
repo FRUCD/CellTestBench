@@ -2,10 +2,10 @@ import numpy as np
 import pandas as pd
 
 grouping = 6
-target = 60
-blacklist = [164, 169, 60, 102, 165]
+target = 168
+blacklist = [164, 169, 60, 102, 165, 136]
 
-table = pd.read_csv("Data/diffs.csv")
+table = pd.read_csv("Data/data.csv")
 sort = table.sort_values("Diff", ascending=False)
 badIndices =  [index for index, row in sort.iterrows() if row['Cell'] in blacklist]
 sort.drop(index=badIndices)

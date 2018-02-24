@@ -1,7 +1,7 @@
 import re
 import os
 import shutil
-START_INDEX = 101
+START_INDEX = 121
 digits = re.compile(r'(\d+)')
 def tokenize(filename):
     return tuple(int(token) if match else token
@@ -17,5 +17,5 @@ files = os.listdir()
 files.sort(key=myKey)
 print(files)
 for f in files:
-    shutil.move(f, '../../Data/' + str(START_INDEX) + tokenize(f)[2])
+    shutil.copy(f, '../Data/Streams/' + str(START_INDEX) + tokenize(f)[2])
     START_INDEX += 1
